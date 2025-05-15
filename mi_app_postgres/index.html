@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Insertar Item</title>
+</head>
+<body>
+  <h1>Agregar nuevo item</h1>
+  <form id="itemForm">
+    <input type="text" id="itemName" placeholder="Nombre del item" required />
+    <button type="submit">Agregar</button>
+  </form>
+
+  <p id="response"></p>
+
+  <script>
+    const form = document.getElementById("itemForm");
+    const responseP = document.getElementById("response");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("itemName").value;
+
+      const res = await fetch("/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+
+      if (res.ok) {
+        responseP.textContent = "Item agregado con éxito!";
+        form.reset();
+      } else {
+        responseP.textContent = "Error al agregar item.";
+      }
+    });
+  </script>
+</body>
+</html>
