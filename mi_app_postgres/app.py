@@ -12,8 +12,8 @@ def get_connection():
     )
 
 @app.route("/")
-def home():
-    return "Flask + PostgreSQL está funcionando"
+def index():
+    return send_from_directory('.', 'index.html')
 
 @app.route("/items", methods=["GET"])
 def get_items():
@@ -41,10 +41,6 @@ def add_item():
         return {"status": "inserted"}
     except Exception as e:
         return {"error": str(e)}, 500
-
-@app.route("/")
-def index():
-    return send_from_directory('.', 'index.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8081)
