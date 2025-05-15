@@ -2,39 +2,91 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Insertar Item</title>
+  <title>Agregar Item - Proyecto Flask + PostgreSQL</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .form-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #respuesta {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h1>Agregar nuevo item</h1>
-  <form id="itemForm">
-    <input type="text" id="itemName" placeholder="Nombre del item" required />
-    <button type="submit">Agregar</button>
-  </form>
-
-  <p id="response"></p>
+  <div class="form-container">
+    <h1>Agregar un nuevo item</h1>
+    <form id="formulario">
+      <input type="text" id="item" placeholder="Nombre del item" required />
+      <button type="submit">Enviar</button>
+    </form>
+    <p id="respuesta"></p>
+  </div>
 
   <script>
-    const form = document.getElementById("itemForm");
-    const responseP = document.getElementById("response");
+    const form = document.getElementById("formulario");
+    const respuesta = document.getElementById("respuesta");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const name = document.getElementById("item").value;
+      try {
+        const res = await fetch("/items", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name })
+        });
 
-      const name = document.getElementById("itemName").value;
-
-      const res = await fetch("/items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
-
-      if (res.ok) {
-        responseP.textContent = "Item agregado con éxito!";
-        form.reset();
-      } else {
-        responseP.textContent = "Error al agregar item.";
+        if (res.ok) {
+          respuesta.textContent = "Item agregado con éxito!";
+          respuesta.style.color = "green";
+          form.reset();
+        } else {
+          respuesta.textContent = "Error al agregar el item.";
+          respuesta.style.color = "red";
+        }
+      } catch (error) {
+        respuesta.textContent = "No se pudo conectar con el servidor.";
+        respuesta.style.color = "red";
       }
     });
   </script>
 </body>
 </html>
+
